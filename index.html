@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Candy Crush Saga</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.1.0/",
+    "react": "https://esm.sh/react@^19.1.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.0/"
+  }
+}
+</script>
+<style>
+  body {
+    font-family: 'Nunito', sans-serif;
+  }
+  @keyframes pop {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.4);
+      opacity: 0.7;
+    }
+    100% {
+      transform: scale(0);
+      opacity: 0;
+    }
+  }
+  .pop-animation {
+    animation: pop 0.3s ease-out forwards;
+  }
+  @keyframes fall-in {
+    0% {
+      transform: translateY(-200%);
+      opacity: 0;
+    }
+    60% {
+      transform: translateY(5%);
+      opacity: 1;
+    }
+    80% {
+      transform: translateY(-2%);
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  .fall-in-animation {
+    animation: fall-in 0.5s ease-out forwards;
+  }
+  .striped-background {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 80%;
+    border-radius: 0.5rem;
+    pointer-events: none;
+    z-index: -1;
+  }
+  .striped-h {
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0),
+      rgba(255, 255, 255, 0) 4px,
+      rgba(255, 255, 255, 0.7) 4px,
+      rgba(255, 255, 255, 0.7) 8px
+    );
+  }
+  .striped-v {
+    background: repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0),
+      rgba(255, 255, 255, 0) 4px,
+      rgba(255, 255, 255, 0.7) 4px,
+      rgba(255, 255, 255, 0.7) 8px
+    );
+  }
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+      filter: drop-shadow(0 0 4px #ffdd57);
+    }
+    50% {
+      transform: scale(1.1);
+      filter: drop-shadow(0 0 8px #ffdd57);
+    }
+  }
+  .pulse-animation {
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes laser-h {
+    0% { transform: scaleX(0); }
+    50% { transform: scaleX(1); }
+    100% { transform: scaleX(0); transform-origin: right; }
+  }
+  .laser-h-animation {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: white;
+    border-radius: 3px;
+    box-shadow: 0 0 10px white, 0 0 20px white;
+    transform-origin: left;
+    animation: laser-h 0.3s ease-out forwards;
+  }
+  
+  @keyframes laser-v {
+    0% { transform: scaleY(0); }
+    50% { transform: scaleY(1); }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+  .laser-v-animation {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    background: white;
+    border-radius: 3px;
+    box-shadow: 0 0 10px white, 0 0 20px white;
+    transform-origin: top;
+    animation: laser-v 0.3s ease-out forwards;
+  }
+
+  @keyframes wiggle {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+  .wiggle-animation {
+    animation: wiggle 0.3s ease-in-out;
+  }
+
+  @keyframes score-popup {
+    0% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-30px);
+      opacity: 0;
+    }
+  }
+  .score-popup-animation {
+    animation: score-popup 0.8s ease-out forwards;
+    position: absolute;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: white;
+    text-shadow: 2px 2px 2px rgba(0,0,0,0.5);
+  }
+  
+  @keyframes particle-fly {
+    0% {
+      transform: scale(1) translate(0, 0);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(0) translate(var(--x), var(--y));
+      opacity: 0;
+    }
+  }
+  .particle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    animation: particle-fly 0.8s ease-out forwards;
+    box-shadow: 0 0 5px currentColor;
+  }
+
+  @keyframes combo-popup {
+    0%, 100% {
+      transform: scale(0.5) rotate(-15deg);
+      opacity: 0;
+    }
+    20% {
+      transform: scale(1.2) rotate(5deg);
+      opacity: 1;
+    }
+    80% {
+      transform: scale(1) rotate(0deg);
+      opacity: 1;
+    }
+  }
+  .combo-popup-animation {
+    animation: combo-popup 1.5s ease-in-out forwards;
+    text-shadow: 4px 4px 0px rgba(190, 38, 98, 0.7);
+  }
+
+</style>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-rose-200">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

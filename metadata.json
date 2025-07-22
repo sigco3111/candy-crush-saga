@@ -1,0 +1,6 @@
+{
+  "name": "Candy Crush Saga",
+  "description": "A fun and addictive tile-matching puzzle game where players swap colorful candies to create sets of three or more, clearing them from the board and earning points.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}
