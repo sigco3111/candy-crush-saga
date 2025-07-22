@@ -3,7 +3,7 @@
 
 이 프로젝트는 인기 있는 타일 매칭 퍼즐 게임 '캔디 크러쉬 사가'를 웹 기술로 구현한 클론 프로젝트입니다. 사용자는 다채로운 캔디를 드래그 앤 드롭하여 3개 이상을 일치시켜 점수를 얻습니다. 현대적인 UI와 부드러운 애니메이션으로 즐거운 게임 경험을 제공하는 것을 목표로 합니다.
 
-실행주소1 : https://candy-crush-saga.vercel.app/
+실행주소1 : https://candy-crush-saga-nu.vercel.app/
 
 실행주소2 : https://dev-canvas-pi.vercel.app/
 
